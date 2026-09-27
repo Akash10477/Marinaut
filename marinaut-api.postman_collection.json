@@ -1,0 +1,781 @@
+{
+  "info": {
+    "name": "MARINAUT API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Login request token auto-save kore {{token}}-e. Role bodlate onno portal-er login request chalao."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "fineId",
+      "value": ""
+    },
+    {
+      "key": "violationId",
+      "value": ""
+    },
+    {
+      "key": "vesselId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Public",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          }
+        },
+        {
+          "name": "Lookup fines by reg no",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/public/fines/M-15245"
+          }
+        },
+        {
+          "name": "Verify receipt (QR)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/public/verify/<transactionId>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Owner: Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pranto\",\n  \"email\": \"pranto@example.com\",\n  \"password\": \"secret123\",\n  \"phone\": \"01700000000\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.token) pm.collectionVariables.set('token', j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Owner: Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@marinaut.com\",\n  \"password\": \"owner123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.token) pm.collectionVariables.set('token', j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Naval Police: Register (pending)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/police/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"SI Kamal Hossain\",\n  \"email\": \"kamal@marinaut.gov.bd\",\n  \"password\": \"kamal123\",\n  \"phone\": \"01700000001\",\n  \"badgeNumber\": \"NP-5555\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Naval Police: Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/police/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"police@marinaut.gov.bd\",\n  \"password\": \"police123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.token) pm.collectionVariables.set('token', j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: Register (needs key)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/admin/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Second Admin\",\n  \"email\": \"admin2@marinaut.gov.bd\",\n  \"password\": \"admin234\",\n  \"adminKey\": \"change_me_admin_key\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.token) pm.collectionVariables.set('token', j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/admin/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@marinaut.gov.bd\",\n  \"password\": \"admin123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.token) pm.collectionVariables.set('token', j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Dashboard",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Vessels",
+      "item": [
+        {
+          "name": "List vessels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels?search=&page=1"
+          }
+        },
+        {
+          "name": "Add vessel (owner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vesselName\": \"MV Test Launch\",\n  \"registrationNumber\": \"M-77777\",\n  \"vesselType\": \"Launch\",\n  \"route\": \"Dhaka - Chandpur\",\n  \"capacity\": 500\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.vessel) pm.collectionVariables.set('vesselId', j.vessel._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add tanker (capacity in tons)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vesselName\": \"MT Meghna Oil\",\n  \"registrationNumber\": \"T-501\",\n  \"vesselType\": \"Tanker\",\n  \"route\": \"Chattogram - Khulna\",\n  \"capacity\": 2500\n}"
+            }
+          }
+        },
+        {
+          "name": "Add vessel for owner (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vesselName\": \"MV Admin Added\",\n  \"registrationNumber\": \"M-88888\",\n  \"vesselType\": \"Boat\",\n  \"ownerEmail\": \"owner@marinaut.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get vessel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels/{{vesselId}}"
+          }
+        },
+        {
+          "name": "Update vessel",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels/{{vesselId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route\": \"Dhaka - Barishal\",\n  \"capacity\": 550\n}"
+            }
+          }
+        },
+        {
+          "name": "Suspend vessel (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels/{{vesselId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Suspended\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete vessel (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels/{{vesselId}}"
+          }
+        },
+        {
+          "name": "Force delete vessel (+ fines, payments)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/vessels/{{vesselId}}?force=true&confirm=<registration number>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Violations",
+      "item": [
+        {
+          "name": "List violations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/violations?active=true"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.items && j.items.length) pm.collectionVariables.set('violationId', j.items[0]._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create violation (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/violations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"V11\",\n  \"title\": \"Expired crew certificate\",\n  \"amount\": 7000,\n  \"severity\": \"Minor\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update violation (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/violations/{{violationId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 22000\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Fines",
+      "item": [
+        {
+          "name": "Issue fine (Naval Police)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/fines",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationNumber\": \"M-15245\",\n  \"violationId\": \"{{violationId}}\",\n  \"location\": \"Sadarghat Terminal, Dhaka\",\n  \"notes\": \"950 passengers against capacity 800\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json(); if (j.fine) pm.collectionVariables.set('fineId', j.fine._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List fines",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/fines?status=Unpaid&page=1"
+          }
+        },
+        {
+          "name": "Overdue fines",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/fines?status=Overdue"
+          }
+        },
+        {
+          "name": "Get fine",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/fines/{{fineId}}"
+          }
+        },
+        {
+          "name": "Cancel fine (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/fines/{{fineId}}/cancel",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Recorded in error\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Payments",
+      "item": [
+        {
+          "name": "Pay fine (owner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/payments/fine/{{fineId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"method\": \"bKash\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/payments"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Users (admin)",
+      "item": [
+        {
+          "name": "Search users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users?search=karim"
+          }
+        },
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users?role=police"
+          }
+        },
+        {
+          "name": "Pending Naval Police",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users?role=police&approvalStatus=pending"
+          }
+        },
+        {
+          "name": "Create Naval Police",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"SI Karim\",\n  \"email\": \"karim@marinaut.gov.bd\",\n  \"password\": \"police123\",\n  \"role\": \"police\",\n  \"badgeNumber\": \"NP-1050\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Approve Naval Police",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users/<userId>/approval",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove user",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users/<userId>"
+          }
+        },
+        {
+          "name": "Force remove owner (+ vessels, fines, payments)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users/<userId>?force=true&confirm=<owner email>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Audit log (admin)",
+      "item": [
+        {
+          "name": "All activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/audit-logs?page=1"
+          }
+        },
+        {
+          "name": "Failed logins",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/audit-logs?action=LOGIN_FAILED"
+          }
+        },
+        {
+          "name": "Fine activity in a date range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/audit-logs?entityType=fine&from=2026-09-01&to=2026-09-30"
+          }
+        }
+      ]
+    }
+  ]
+}
